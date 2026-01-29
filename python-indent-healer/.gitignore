@@ -1,0 +1,6 @@
+node_modules/
+out/
+*.vsix
+debug_boss.js*
+test_output.txt
+.vscode-test/

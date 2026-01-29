@@ -12,11 +12,11 @@ Standard Python formatters (like Black or Autopep8) fail when code has indentati
 
 ### 1. Smart Paste (Ctrl + V)
 Automatically detects logic flows and fixes indentation the moment you paste.
-![Smart Paste Demo](https://github.com/vyntri/python-indent-healer/raw/main/images/CTRL%2BV.gif)
+![Smart Paste Demo](https://github.com/AreebShahid07/PyHeal/raw/main/python-indent-healer/images/CTRL%2BV.gif)
 
 ### 2. Manual Heal (Ctrl + Alt + I)
 Have an old file with broken indentation? Fix it instantly.
-![Manual Heal Demo](https://github.com/vyntri/python-indent-healer/raw/main/images/CTRL%2BALT%2BI.gif)
+![Manual Heal Demo](https://github.com/AreebShahid07/PyHeal/raw/main/python-indent-healer/images/CTRL%2BALT%2BI.gif)
 
 ---
 
