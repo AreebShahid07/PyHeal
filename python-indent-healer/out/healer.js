@@ -8,6 +8,8 @@ function healIndentation(text) {
     let currentLevel = 0;
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i].trim();
+        // Clean up unusual whitespace
+        line = line.replace(/\u00A0/g, ' ');
         // Skip empty lines but keep them in output
         if (!line) {
             healedLines.push("");
@@ -15,11 +17,10 @@ function healIndentation(text) {
         }
         // --- INTELLIGENT LEVEL ADJUSTMENT ---
         // 1. HARD RESET KEYWORDS
-        // if __name__ == "__main__" or top-level class/import/def
-        if (line.startsWith('if __name__') && line.includes('"__main__"')) {
+        if (line.match(/^(import|from|class)\b/)) {
             currentLevel = 0;
         }
-        else if (line.match(/^(import|from|class)\b/)) {
+        else if (line.startsWith('if __name__') && line.includes('"__main__"')) {
             currentLevel = 0;
         }
         // Sibling Def Rule: if we see 'def' and we are deep, snap back to level 1 if inside a class
@@ -27,7 +28,7 @@ function healIndentation(text) {
             const classLevel = findParentLevel(healedLines, 'class');
             currentLevel = classLevel !== -1 ? classLevel + 1 : 0;
         }
-        // 2. BLOCK MATCHING (The "Look-Back" Fix)
+        // 2. BLOCK SNAP-BACK (Else, Elif, Except, Finally)
         else if (line.match(/^(else|elif|except|finally)\b/)) {
             const matchType = (line.startsWith('ex') || line.startsWith('fin')) ? 'try' : 'if';
             const parentIndent = findParentLevel(healedLines, matchType);
@@ -44,26 +45,16 @@ function healIndentation(text) {
                 currentLevel = matchLevel + 1;
             }
         }
-        // 3. POST-RETURN DEDENT (Optional hint)
-        // If previous line was return/break, we *might* want to dedent.
-        // But Rule 1 & 2 are much stronger.
-        if (i > 0) {
-            const prevLine = lines[i - 1].trim();
-            if (prevLine.match(/^(return|raise|break|continue|pass)\b/)) {
-                if (!line.match(/^(else|elif|except|finally|case)\b/)) {
-                    // We only dedent if we aren't already at or below the expected level
-                    // This is tricky without a full parser, so we keep it conservative.
-                    // currentLevel = Math.max(0, currentLevel - 1); 
-                }
-            }
-        }
-        // --- WRITE THE LINE ---
-        const indentStr = " ".repeat(currentLevel * INDENT_SIZE);
+        // 3. WRITE THE LINE
+        const indentStr = " ".repeat(Math.max(0, currentLevel) * INDENT_SIZE);
         healedLines.push(indentStr + line);
-        // --- FUTURE LEVEL ADJUSTMENT ---
-        // If this line ends with ':', next line goes deeper
+        // 4. FUTURE LEVEL ADJUSTMENT
+        // Openers (:) increase level, Closers (return, etc.) decrease level
         if (line.match(/:\s*(#.*)?$/)) {
             currentLevel++;
+        }
+        else if (line.match(/^(return|raise|break|continue|pass)\b/)) {
+            currentLevel = Math.max(0, currentLevel - 1);
         }
     }
     return healedLines.join("\n");
@@ -75,7 +66,9 @@ function findParentLevel(lines, keyword) {
     const INDENT_SIZE = 4;
     for (let j = lines.length - 1; j >= 0; j--) {
         const content = lines[j].trim();
+        // Match the keyword at the start of the line content
         if (content.startsWith(keyword) || (keyword === 'if' && content.startsWith('elif'))) {
+            // Find how many spaces the original line has
             const spaces = lines[j].search(/\S/);
             return spaces >= 0 ? Math.floor(spaces / INDENT_SIZE) : 0;
         }

@@ -45,14 +45,29 @@ Have an old file with broken indentation? Fix it instantly.
 
 ## Release Notes
 
-### v0.0.3 (The "Context" Update)
-* **New Engine:** Switched from linear logic to **"Look-Back" logic**. The healer now scans backwards to snap blocks (`if/else`, `try/except`) to their correct parents.
-* **Deep Nesting Fix:** Resolved issues with 3+ levels of indentation.
-* **Documentation:** Added demo GIFs and verification tests.
+### 0.0.6
+- **Optimization**: Refined heuristic engine for complex Python blocks (Try/Except/Finally).
+- **Cleanup**: Automatic normalization of non-breaking spaces (\u00A0) to standard spaces.
 
-### v0.0.1
-* Initial Launch.
-* Added Heuristic Processor and Smart Paste support.
+### 0.0.5
+- **Bug Fix**: Resolved the "Staircase Indentation" bug where statements after closer keywords (return/break) would over-indent.
+- Improved scope tracking for sibling blocks.
+
+### 0.0.4
+- Performance optimizations for large file healing.
+- Logic enhancements for `match/case` patterns.
+
+### 0.0.3
+- **Feature**: Initial implementation of "Smart Paste".
+
+### 0.0.2
+- Improved regex patterns for block detection.
+- Added platform-specific keybindings (Cmd+Alt+I for Mac).
+
+### 0.0.1
+- **Initial Launch**.
+- Core Heuristic Processor implementation.
+- Basic command and shortcut registration.
 
 ---
 
