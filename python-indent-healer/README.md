@@ -45,9 +45,19 @@ Have an old file with broken indentation? Fix it instantly.
 
 ## Release Notes
 
-### 0.0.6
-- **Optimization**: Refined heuristic engine for complex Python blocks (Try/Except/Finally).
-- **Cleanup**: Automatic normalization of non-breaking spaces (\u00A0) to standard spaces.
+### 1.1.0 (Precision Tuning)
+- **Nested Block Fix**: Resolved an issue where multiple `else` statements at different nesting levels could align incorrectly.
+- **Closers-Aware Detection**: Improved `findParentLevel` to intelligently skip over nested blocks by tracking closers (`else:`, `finally:`, etc.).
+- **Nearest Parent Snap**: Refined the Return Escape to snap to the level of the most recent block, handling loops more accurately.
+
+### 1.0.0 (The Ultimate Release)
+- **Ghost Tracker**: Indentation logic now survives blank lines by remembering context.
+- **Return Escape**: `return` statements now correctly snap out to the function level, preventing "None Type" and "Dead Code" errors.
+- **Data Structure Support**: Added support for multi-line lists, sets, and dictionaries (indentation based on brackets `[]`, `{}`, `()`).
+- **Section Header Snapping**: Powerful new heuristic for aligning major print/log statements in complex scripts.
+
+### 0.0.7
+- **Pylance Compatibility**: Fixed decorator alignment issues (`@staticmethod`, etc.).
 
 ### 0.0.5
 - **Bug Fix**: Resolved the "Staircase Indentation" bug where statements after closer keywords (return/break) would over-indent.

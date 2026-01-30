@@ -224,4 +224,26 @@ class NetworkService:
 
         assert.strictEqual(healIndentation(input), expected);
     });
+
+    test('Nested If-Else Blocks', () => {
+        const input = `def h(n):
+if n>=0:
+if n==0:
+print("zero")
+else:
+print("pos")
+else:
+print("neg")`;
+
+        const expected = `def h(n):
+    if n>=0:
+        if n==0:
+            print("zero")
+        else:
+            print("pos")
+    else:
+        print("neg")`;
+
+        assert.strictEqual(healIndentation(input), expected);
+    });
 });
