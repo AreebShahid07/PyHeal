@@ -1,6 +1,7 @@
 node_modules/
 out/
 *.vsix
+V2_PLAN.md
 debug_boss.js*
 test_output.txt
 .vscode-test/
