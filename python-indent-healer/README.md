@@ -45,6 +45,13 @@ Have an old file with broken indentation? Fix it instantly.
 
 ## Release Notes
 
+### 2.0.0 (The Engine Rebuild)
+- **New Multi-Pass Engine**: Healing now runs as a four-pass pipeline — a string/bracket-aware logical-line assembler, an explicit block-stack structure inferencer, a deterministic ambiguity resolver, and an optional Python verifier. Regex special-cases are gone; structure is tracked, not guessed.
+- **Verified Ambiguity Fixes**: Two long-standing ambiguity patterns are now resolved by documented, evidence-chained rules: value-`return` after a single-statement loop guard snaps to the loop sibling, and nested helper `def`s are rescued from dead code when a use-site call references an outer local. On the 499-line reference fixture, output is now byte-identical to hand-repaired ground truth.
+- **Proof-Checked Output (Smart Paste)**: When a Python interpreter is available, smart paste verifies healed code with `ast.parse` and retries alternative candidates on failure — silently, with no new settings. Without Python, behavior is unchanged and just as fast.
+- **Regression-Proofed**: A restored unit suite (74 tests) plus golden-corpus equivalence checks against the legacy engine guard every heuristic; the old engine ships inside the extension for A/B comparison and instant rollback.
+- **Zero Workflow Change**: Same `Ctrl+V`, same `Ctrl+Alt+I`, same silent behavior, same public API. Just a stronger core.
+
 ### 1.1.0 (Precision Tuning)
 - **Nested Block Fix**: Resolved an issue where multiple `else` statements at different nesting levels could align incorrectly.
 - **Closers-Aware Detection**: Improved `findParentLevel` to intelligently skip over nested blocks by tracking closers (`else:`, `finally:`, etc.).

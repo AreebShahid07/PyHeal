@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { healIndentation } from './healer';
+import { healIndentation, healIndentationVerified } from './healer';
 
 export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('extension.healPython', () => {
@@ -27,7 +27,10 @@ export function activate(context: vscode.ExtensionContext) {
 
         try {
             const clipboardText = await vscode.env.clipboard.readText();
-            const fixedText = healIndentation(clipboardText);
+            // M4: smart paste uses the verified path — Python ast.parse check
+            // with candidate retry when an interpreter is available; identical
+            // silent behavior when it is not (v2 default output).
+            const fixedText = await healIndentationVerified(clipboardText);
 
             editor.edit(editBuilder => {
                 editor.selections.forEach(selection => {

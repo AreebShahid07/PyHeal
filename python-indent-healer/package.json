@@ -4,7 +4,7 @@
   "publisher": "vyntri",
   "icon": "image.png",
   "description": "Automatically fixes broken Python indentation from copy-pastes.",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "engines": {
     "vscode": "^1.90.0"
   },
@@ -61,7 +61,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "mocha --ui tdd out/test/unit/*.test.js"
   },
   "devDependencies": {
     "@types/vscode": "^1.90.0",

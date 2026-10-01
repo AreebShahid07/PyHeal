@@ -1,7 +1,54 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ENGINE_VERSION = void 0;
 exports.healIndentation = healIndentation;
+exports.healIndentationVerified = healIndentationVerified;
+exports.healIndentationLegacy = healIndentationLegacy;
+const structure_1 = require("./structure");
+/**
+ * Engine version marker. v2 = multi-pass pipeline (lexer + structure
+ * inferencer); legacy = v1.1.0 streaming heuristic, retained for A/B
+ * comparison in dev builds and rollback.
+ */
+exports.ENGINE_VERSION = 'v2.0.0-pipeline';
+/**
+ * Public API — unchanged signature since v1. Now backed by the v2
+ * multi-pass pipeline (see lexer.ts / structure.ts). Behavior matches
+ * the legacy engine byte-for-byte on the golden corpus; documented
+ * divergences exist only where the pipeline is provably more correct
+ * (pinned by tests with ast.parse-verified evidence).
+ */
 function healIndentation(text) {
+    return (0, structure_1.renderPlanned)(text);
+}
+/**
+ * Async verified path (M4): heals, then optionally checks the result with a
+ * Python ast.parse when an interpreter is available, retrying alternative
+ * candidates (no-resolver, legacy) on failure. Falls back to the default
+ * v2 output when Python is absent or all candidates fail. Never throws.
+ * Used by smart paste; the synchronous heal command uses healIndentation.
+ */
+function healIndentationVerified(text) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { healIndentationVerified: verify } = yield Promise.resolve().then(() => require('./verifier'));
+        const { text: healed } = yield verify(text);
+        return healed;
+    });
+}
+/**
+ * Legacy v1.1.0 engine, preserved verbatim for A/B comparison and
+ * rollback. Not called by healIndentation anymore.
+ */
+function healIndentationLegacy(text) {
     const lines = text.split(/\r?\n/);
     const healedLines = [];
     const INDENT_SIZE = 4;

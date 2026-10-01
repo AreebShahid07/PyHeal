@@ -37,7 +37,10 @@ function activate(context) {
         }
         try {
             const clipboardText = yield vscode.env.clipboard.readText();
-            const fixedText = (0, healer_1.healIndentation)(clipboardText);
+            // M4: smart paste uses the verified path — Python ast.parse check
+            // with candidate retry when an interpreter is available; identical
+            // silent behavior when it is not (v2 default output).
+            const fixedText = yield (0, healer_1.healIndentationVerified)(clipboardText);
             editor.edit(editBuilder => {
                 editor.selections.forEach(selection => {
                     editBuilder.replace(selection, fixedText);

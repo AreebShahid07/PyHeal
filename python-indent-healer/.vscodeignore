@@ -1,0 +1,13 @@
+src/**
+src/test/**
+node_modules/**
+out/**/*.map
+out/test/**
+.github/**
+.vscode-test/**
+tsconfig.json
+.eslintrc.json
+package-lock.json
+.gitignore
+images/**
+V2_PLAN.md

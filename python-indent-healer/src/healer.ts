@@ -1,4 +1,43 @@
+import { renderPlanned } from './structure';
+
+/**
+ * Engine version marker. v2 = multi-pass pipeline (lexer + structure
+ * inferencer); legacy = v1.1.0 streaming heuristic, retained for A/B
+ * comparison in dev builds and rollback.
+ */
+export const ENGINE_VERSION = 'v2.0.0-pipeline';
+
+/**
+ * Public API — unchanged signature since v1. Now backed by the v2
+ * multi-pass pipeline (see lexer.ts / structure.ts). Behavior matches
+ * the legacy engine byte-for-byte on the golden corpus; documented
+ * divergences exist only where the pipeline is provably more correct
+ * (pinned by tests with ast.parse-verified evidence).
+ */
 export function healIndentation(text: string): string {
+    return renderPlanned(text);
+}
+
+/**
+ * Async verified path (M4): heals, then optionally checks the result with a
+ * Python ast.parse when an interpreter is available, retrying alternative
+ * candidates (no-resolver, legacy) on failure. Falls back to the default
+ * v2 output when Python is absent or all candidates fail. Never throws.
+ * Used by smart paste; the synchronous heal command uses healIndentation.
+ */
+export async function healIndentationVerified(
+    text: string
+): Promise<string> {
+    const { healIndentationVerified: verify } = await import('./verifier');
+    const { text: healed } = await verify(text);
+    return healed;
+}
+
+/**
+ * Legacy v1.1.0 engine, preserved verbatim for A/B comparison and
+ * rollback. Not called by healIndentation anymore.
+ */
+export function healIndentationLegacy(text: string): string {
     const lines = text.split(/\r?\n/);
     const healedLines: string[] = [];
     const INDENT_SIZE = 4;

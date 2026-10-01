@@ -63,7 +63,7 @@ class CraftingRecipe:
         for item, count in self.ingredients.items():
             if inventory.count(item) < count:
                 return False
-            return True
+        return True
     def craft(self, inventory):
         if not self.can_craft(inventory):
             return False
@@ -380,13 +380,13 @@ class Logger:
     def log(level, message):
         ts = time.strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{ts}] [{level}] {message}")
-        @staticmethod
+    @staticmethod
     def info(msg):
         Logger.log("INFO", msg)
-        @staticmethod
+    @staticmethod
     def error(msg):
         Logger.log("ERROR", msg)
-        @staticmethod
+    @staticmethod
     def warning(msg):
         Logger.log("WARN", msg)
 
@@ -451,13 +451,13 @@ class Application:
 class Matrix4x4:
     def __init__(self):
         self.m = [[0]*4 for _ in range(4)]
-        @staticmethod
+    @staticmethod
     def identity():
         res = Matrix4x4()
         for i in range(4):
             res.m[i][i] = 1
             return res
-        @staticmethod
+    @staticmethod
     def translation(x, y, z):
         res = Matrix4x4.identity()
         res.m[0][3] = x
@@ -474,8 +474,8 @@ class Matrix4x4:
                     res.m[i][j] = sum
                     return res
 
-    def complex_algorithm_test():
-        data = [random.randint(0, 100) for _ in range(1000)]
+def complex_algorithm_test():
+    data = [random.randint(0, 100) for _ in range(1000)]
     def quicksort(arr):
         if len(arr) <= 1:
             return arr
